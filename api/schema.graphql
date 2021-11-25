@@ -1,0 +1,229 @@
+scalar GraphQLDate
+
+enum StatusType {
+  New
+  Assigned
+  Fixed
+  Closed
+}
+
+enum StorageCollaborationStatusType {
+  Draft
+  Pending
+  Accepted
+  Rejected
+}
+
+enum SeekingStatusType {
+  Storage
+  Other
+}
+
+type OnlineProfile {
+  _id: ID!
+  id: Int!
+  userId: String
+  name: String!
+  seeking: SeekingStatusType!
+  product: String
+  website: String
+  address: String
+  postal: String
+  created: GraphQLDate!
+}
+
+type OfflineProfile {
+  _id: ID!
+  id: Int!
+  userId: String
+  name: String!
+  seeking: SeekingStatusType!
+  product: String
+  website: String
+  address: String
+  postal: String
+  totalStorage: Int
+  totalColdStorage:Int
+  availStorage: Int
+  availColdStorage: Int
+  created: GraphQLDate!
+  reserved: Boolean
+  reservationContact: String
+}
+
+type StorageCollaboration {
+  _id: ID!
+  id: Int!
+  offlineProfileId: String
+  onlineProfileUserId: String
+  offlineProfileUserId: String
+  name: String
+  seeking: SeekingStatusType
+  volume: Int
+  price: Int
+  startDate:GraphQLDate
+  endDate: GraphQLDate
+  coldVolume: Int
+  coldPrice: Int
+  coldTemperature: Int
+  coldStartDate:GraphQLDate
+  coldEndDate: GraphQLDate
+  status: StorageCollaborationStatusType
+  created: GraphQLDate
+}
+
+type OnlineProfileListWithPages {
+  onlineProfiles: [OnlineProfile!]!
+  pages: Int
+}
+
+type OfflineProfileListWithPages {
+  offlineProfiles: [OfflineProfile!]!
+  pages: Int
+}
+
+type StorageCollaborationListWithPages {
+  storageCollaborations: [StorageCollaboration!]!
+  pages: Int
+}
+
+type User {
+  signedIn: Boolean!
+  givenName: String
+  name: String
+  email: String
+}
+
+"Toned down Objects, used as inputs, without server generated values."
+
+input OnlineProfileInputs {
+  userId: String
+  name: String!
+  seeking: SeekingStatusType!
+  product: String
+  website: String
+  address: String
+  postal: String
+}
+
+input OfflineProfileInputs {
+  userId: String
+  name: String!
+  seeking: SeekingStatusType!
+  product: String
+  website: String
+  address: String
+  postal: String
+  totalStorage: Int
+  totalColdStorage:Int
+  availStorage: Int
+  availColdStorage: Int
+  reserved: Boolean
+  reservationContact: String
+}
+
+input StorageCollaborationInputs {
+  onlineProfileUserId: String
+  offlineProfileUserId: String
+  offlineProfileId: String
+  name: String!
+  seeking: SeekingStatusType!
+  volume: Int
+  price: Int
+  startDate:GraphQLDate
+  endDate: GraphQLDate
+  coldVolume: Int
+  coldPrice: Int
+  coldTemperature: Int
+  coldStartDate:GraphQLDate
+  coldEndDate: GraphQLDate
+  # status: StorageCollaborationStatusType
+}
+
+"""Inputs for object Update: all are optional. Whichever is specified will
+be set to the given value, undefined fields will remain unmodified."""
+
+input OnlineProfileUpdateInputs {
+  name: String
+  seeking: SeekingStatusType
+  product: String
+  website: String
+  address: String
+  postal: String
+}
+  # userId: String
+
+input OfflineProfileUpdateInputs {
+  name: String
+  seeking: SeekingStatusType
+  product: String
+  website: String
+  address: String
+  postal: String
+  totalStorage: Int
+  totalColdStorage:Int
+  availStorage: Int
+  availColdStorage: Int
+  reserved: Boolean
+  reservationContact: String
+}
+  # userId: String
+
+input StorageCollaborationUpdateInputs {
+  onlineProfileUserId: String
+  offlineProfileUserId: String
+  offlineProfileId: String
+  name: String
+  seeking: SeekingStatusType
+  volume: Int
+  price: Int
+  startDate:GraphQLDate
+  endDate: GraphQLDate
+  coldVolume: Int
+  coldPrice: Int
+  coldTemperature: Int
+  coldStartDate:GraphQLDate
+  coldEndDate: GraphQLDate
+  status: StorageCollaborationStatusType
+}
+
+##### Top level declarations
+
+type Query {
+  about: String!
+  user: User!
+  onlineProfileList(
+    seeking: SeekingStatusType
+    storageMin: Int
+    storageMax: Int
+    search: String
+    page: Int = 1
+  ): OnlineProfileListWithPages
+  onlineProfile(id: Int!): OnlineProfile!
+  offlineProfileList(
+    seeking: SeekingStatusType
+    storageMin: Int
+    storageMax: Int
+    search: String
+    page: Int = 1
+  ): OfflineProfileListWithPages
+  offlineProfile(id: Int!): OfflineProfile!
+  storageCollaborationList(
+    seeking: SeekingStatusType
+    storageMin: Int
+    storageMax: Int
+    search: String
+    page: Int = 1
+  ): StorageCollaborationListWithPages
+  storageCollaboration(id: Int!): StorageCollaboration!
+}
+
+type Mutation {
+  onlineProfileAdd(onlineProfile: OnlineProfileInputs!): OnlineProfile!
+  offlineProfileAdd(offlineProfile: OfflineProfileInputs!): OfflineProfile!
+  storageCollaborationAdd(storageCollaboration: StorageCollaborationInputs!): StorageCollaboration!
+  setAboutMessage(message: String!): String
+  onlineProfileUpdate(id: Int!, changes: OnlineProfileUpdateInputs!): OnlineProfile!
+  offlineProfileUpdate(id: Int!, changes: OfflineProfileUpdateInputs!): OfflineProfile!
+  storageCollaborationUpdate(id: Int!, changes: StorageCollaborationUpdateInputs!): StorageCollaboration!
+}

@@ -1,0 +1,126 @@
+@import '~react-datetime/css/react-datetime.css';
+
+html {
+  font-family: sans-serif;
+}
+
+body {
+  width: 100%;
+  margin: 0 auto;
+  background-color: whitesmoke;
+}
+
+header {
+  background-color: gold;
+  text-align: center;
+  padding: 2rem 0 1rem 0;
+  /* margin: 0 0 5rem 0; */
+  /* font-family: cursive; */
+}
+
+.not-found {
+  text-align:center;
+}
+
+.logo-container {
+  width: 5rem;
+  height: 3rem;
+  margin: 0 auto;
+}
+
+/* Resize images */
+.logo-container img {
+  width: 100%;
+  height: auto;
+}
+
+.login {
+  margin-top: 5rem;
+}
+
+.login-button {
+  margin-top: 1.5rem;
+}
+
+.readOnlyFormTextBoxValue {
+  text-align: left;
+}
+
+.search-online-profile-details-button {
+  margin: 1rem 0;
+}
+
+.fulfill-accept-storage-request-button {
+  margin-left: 3rem;
+}
+
+.fulfill-reject-storage-request-button {
+  margin-right: 3rem;
+}
+
+.search-bar-label {
+  padding-top: 2rem !important;
+}
+
+p {
+  margin: 1rem 0;
+  text-align: center;
+}
+
+label {
+  margin: 0 auto;
+  padding: 1rem 0 1rem 0;
+  font-size: 1.5rem;
+}
+
+input {
+  margin: 1rem 0;
+  font-size: 1rem;
+}
+
+h2 {
+  text-align: center;
+}
+
+h3 {
+  text-align: center;
+}
+
+footer {
+  background-color: gold;
+  text-align: center;
+  padding: 1rem 0 1rem 0;
+  margin: 0 auto;
+}
+
+.wrapper {
+  margin: 0 3rem ;
+  padding: 0 0 2rem 0;
+  min-height: 100vh;
+  text-align: center;
+}
+
+.bordered-table {
+  /* margin-left: auto;
+  margin-right: auto; */
+  margin: 2rem auto 2rem auto
+}
+
+.description {
+  margin: 0 0 2rem 0 ;
+  display: block;
+  text-align: center;
+}
+
+.public {
+  display: block;
+}
+
+/* .pagination {
+  display: block;
+} */
+
+/* #profile-search {
+  height: 1rem;
+  display:block;
+} */
