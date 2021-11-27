@@ -3,8 +3,8 @@ import URLSearchParams from 'url-search-params';
 import { Panel, Pagination, Button } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
-import ProfileFilter from './ProfileFilter.jsx';
-import ProfileSearch from './ProfileSearch.jsx';
+// import ProfileFilter from './ProfileFilter.jsx';
+import OfflineProfileSearch from './OfflineProfileSearch.jsx';
 
 import graphQLFetch from './graphQLFetch.js';
 import withToast from './withToast.jsx';
@@ -177,16 +177,16 @@ class OfflineProfileList extends React.Component {
     return (
       <React.Fragment>
         <h3>Browse Offline Profiles</h3>
-        <ProfileSearch />
+        <OfflineProfileSearch />
         <br />
-        <Panel>
+        {/* <Panel>
           <Panel.Heading>
             <Panel.Title toggle>Filter</Panel.Title>
           </Panel.Heading>
           <Panel.Body collapsible>
             <ProfileFilter urlBase="/browse-offline-profile" />
           </Panel.Body>
-        </Panel>
+        </Panel> */}
 
         <OfflineProfileTable offlineProfiles={offlineProfiles} browse />
 

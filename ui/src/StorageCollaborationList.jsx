@@ -3,8 +3,8 @@ import URLSearchParams from 'url-search-params';
 import { Panel, Pagination, Button } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
-import ProfileFilter from './ProfileFilter.jsx';
-import ProfileSearch from './ProfileSearch.jsx';
+// import ProfileFilter from './ProfileFilter.jsx';
+// import ProfileSearch from './OnlineProfileSearch.jsx';
 
 import graphQLFetch from './graphQLFetch.js';
 import withToast from './withToast.jsx';
@@ -34,11 +34,11 @@ class StorageCollaborationList extends React.Component {
     const query = `query { user {
       signedIn givenName email
     }}`;
-    const data = await graphQLFetch(query, null, null, cookie);
-    return data;
+    const userData = await graphQLFetch(query, null, null, cookie);
+    return userData;
   }
 
-  static async fetchData(match, search, showError) {
+  static async fetchData(match, search, showError, user) {
     const params = new URLSearchParams(search);
     const vars = { hasSelection: false, selectedId: 0 };
     if (params.get('seeking')) vars.seeking = params.get('seeking');
@@ -59,6 +59,14 @@ class StorageCollaborationList extends React.Component {
     if (Number.isNaN(page)) page = 1;
     vars.page = page;
 
+    console.log('fetchData user:', user);
+    if (user) {
+      vars.offlineProfileUserId = user.email;
+      vars.onlineProfileUserId = user.email;
+    }
+
+    // the 1st storageCollaborationList is just a name
+    // the 2nd storageCollaborationList is the query
     const query = `query storageCollaborationList(
       $seeking: SeekingStatusType
       $storageMin: Int
@@ -66,12 +74,16 @@ class StorageCollaborationList extends React.Component {
       $hasSelection: Boolean!
       $selectedId: Int!
       $page: Int
+      $offlineProfileUserId: String
+      $onlineProfileUserId: String
     ) {
       storageCollaborationList(
         seeking: $seeking
         storageMin: $storageMin
         storageMax: $storageMax
         page: $page
+        offlineProfileUserId: $offlineProfileUserId
+        onlineProfileUserId: $onlineProfileUserId
       ) {
         storageCollaborations {
           id name seeking volume price startDate endDate
@@ -87,6 +99,7 @@ class StorageCollaborationList extends React.Component {
     }`;
 
     const data = await graphQLFetch(query, vars, showError);
+    // console.log('storage collaboration data:', data);
     return data;
   }
 
@@ -110,13 +123,21 @@ class StorageCollaborationList extends React.Component {
   }
 
   async componentDidMount() {
-    const { storageCollaborations } = this.state;
-    if (storageCollaborations == null) this.loadData();
+    // const { storageCollaborations } = this.state;
+    // if (storageCollaborations == null) this.loadData();
     const { user } = this.state;
     if (user == null) {
       const data = await StorageCollaborationList.fetchUserData();
       this.setState({ user: data.user });
+      // console.log('componentDidMount user 1:', user);
     }
+
+    // console.log('componentDidMount this.state:', this.state);
+    // console.log('componentDidMount this.state.user:', this.state.user);
+    // console.log('componentDidMount user 2:', user);
+
+    const { storageCollaborations } = this.state;
+    if (storageCollaborations == null) this.loadData(this.state.user);
   }
 
   componentDidUpdate(prevProps) {
@@ -134,16 +155,18 @@ class StorageCollaborationList extends React.Component {
     this.setState({ user });
   }
 
-  async loadData() {
+  async loadData(user) {
     const { location: { search }, match, showError } = this.props;
-    const data = await StorageCollaborationList.fetchData(match, search, showError);
+    // console.log('loadData user:', user);
+
+    const data = await StorageCollaborationList.fetchData(match, search, showError, user);
     if (data) {
       this.setState({
         storageCollaborations: data.storageCollaborationList.storageCollaborations,
         selectedStorageCollaboration: data.storageCollaboration,
         pages: data.storageCollaborationList.pages,
       });
-      console.log('data:', data);
+      // console.log('loadData data:', data);
     }
   }
 
@@ -177,14 +200,14 @@ class StorageCollaborationList extends React.Component {
     return (
       <React.Fragment>
         <h3>Storage Collaborations</h3>
-        {/* <ProfileSearch />
+        {/* <ProfileSearch user={user} />
         <br />
         <Panel>
           <Panel.Heading>
             <Panel.Title toggle>Filter</Panel.Title>
           </Panel.Heading>
           <Panel.Body collapsible>
-            <ProfileFilter urlBase="/browse-offline-profile" />
+            <ProfileFilter urlBase="/storage-collaboration-list" />
           </Panel.Body>
         </Panel> */}
 

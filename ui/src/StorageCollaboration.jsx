@@ -79,7 +79,7 @@ class StorageCollaboration extends React.Component {
   }
 
   async handleSubmit(response, e) {
-    console.log('response:', response);
+    // console.log('response:', response);
 
     e.preventDefault();
     this.showValidation();
@@ -96,7 +96,7 @@ class StorageCollaboration extends React.Component {
       ) {
         id name seeking volume price startDate endDate
         coldVolume coldPrice coldStartDate coldEndDate
-        status created offlineProfileId offlineProfileUserId
+        created offlineProfileId offlineProfileUserId
         onlineProfileUserId
       }
     }`;
@@ -155,233 +155,260 @@ class StorageCollaboration extends React.Component {
 
     const { storageCollaboration: { name, seeking } } = this.state;
     const { storageCollaboration: { volume, price, startDate, endDate, coldVolume, coldPrice, coldStartDate, coldEndDate } } = this.state;
-    const { storageCollaboration: { created, status, onlineProfileUserId } } = this.state;
+    const { storageCollaboration: { created, status, onlineProfileUserId, offlineProfileUserId } } = this.state;
 
     const user = this.context;
     const readOnly = status === 'Draft' ? false : true;
+    // console.log('storageCollaboration user:', user);
+    // console.log('onlineProfileUserId user:', onlineProfileUserId);
+    // console.log('offlineProfileUserId user:', offlineProfileUserId);
+
 
     return (
-      <Panel>
-        <Panel.Heading>
-          <Panel.Title>{`Storage collaboration: ${id} | Status: ${status}`}</Panel.Title>
-        </Panel.Heading>
-        <Panel.Body>
-          <Form horizontal onSubmit={this.handleSubmit}>
-            <FormGroup>
-              <Col componentClass={ControlLabel} sm={3}>Created</Col>
-              <Col sm={9}>
-                <FormControl.Static>
-                  {created.toDateString()}
-                </FormControl.Static>
-              </Col>
-            </FormGroup>
-            <FormGroup>
-              <Col componentClass={ControlLabel} sm={3}>Seeking</Col>
-              <Col sm={9}>
-                <FormControl
-                  componentClass="select"
-                  name="seeking"
-                  value={seeking || ''}
-                  onChange={this.onChange}
-                  disabled={readOnly}
-                >
-                  <option value="Storage">Storage</option>
-                  <option value="Other">Other</option>
-                </FormControl>
-              </Col>
-            </FormGroup>
-            <FormGroup>
-              <Col componentClass={ControlLabel} sm={3}>Volume</Col>
-              <Col sm={9}>
-                <FormControl
-                  componentClass={NumInput}
-                  name="volume"
-                  value={volume}
-                  onChange={this.onChange}
-                  key={id}
-                  readOnly={readOnly}
-                />
-              </Col>
-            </FormGroup>
-            <FormGroup>
-              <Col componentClass={ControlLabel} sm={3}>Price</Col>
-              <Col sm={9}>
-                <FormControl
-                  componentClass={NumInput}
-                  name="price"
-                  value={price}
-                  onChange={this.onChange}
-                  key={id}
-                  readOnly={readOnly}
-                />
-              </Col>
-            </FormGroup>
-            <FormGroup>
-              <Col componentClass={ControlLabel} sm={3}>Start Date</Col>
-              <Col sm={9}>
-                <FormControl
-                  componentClass={DateInput}
-                  onValidityChange={this.onValidityChange}
-                  name="startDate"
-                  value={startDate}
-                  onChange={this.onChange}
-                  key={id}
-                  readOnly={readOnly}
-                />
-                <FormControl.Feedback />
-              </Col>
-            </FormGroup>
-            <FormGroup>
-              <Col componentClass={ControlLabel} sm={3}>End Date</Col>
-              <Col sm={9}>
-                <FormControl
-                  componentClass={DateInput}
-                  onValidityChange={this.onValidityChange}
-                  name="endDate"
-                  value={endDate}
-                  onChange={this.onChange}
-                  key={id}
-                  readOnly={readOnly}
-                />
-                <FormControl.Feedback />
-              </Col>
-            </FormGroup>
-            <FormGroup>
-              <Col componentClass={ControlLabel} sm={3}>Cold Volume</Col>
-              <Col sm={9}>
-                <FormControl
-                  componentClass={NumInput}
-                  name="coldVolume"
-                  value={coldVolume}
-                  onChange={this.onChange}
-                  key={id}
-                  readOnly={readOnly}
-                />
-              </Col>
-            </FormGroup>
-            <FormGroup>
-              <Col componentClass={ControlLabel} sm={3}>Cold Price</Col>
-              <Col sm={9}>
-                <FormControl
-                  componentClass={NumInput}
-                  name="coldPrice"
-                  value={coldPrice}
-                  onChange={this.onChange}
-                  key={id}
-                  readOnly={readOnly}
-                />
-              </Col>
-            </FormGroup>
-            <FormGroup>
-              <Col componentClass={ControlLabel} sm={3}>Cold Start Date</Col>
-              <Col sm={9}>
-                <FormControl
-                  componentClass={DateInput}
-                  onValidityChange={this.onValidityChange}
-                  name="coldStartDate"
-                  value={coldStartDate}
-                  onChange={this.onChange}
-                  key={id}
-                  readOnly={readOnly}
-                />
-                <FormControl.Feedback />
-              </Col>
-            </FormGroup>
-            <FormGroup>
-              <Col componentClass={ControlLabel} sm={3}>Cold End Date</Col>
-              <Col sm={9}>
-                <FormControl
-                  componentClass={DateInput}
-                  onValidityChange={this.onValidityChange}
-                  name="coldEndDate"
-                  value={coldEndDate}
-                  onChange={this.onChange}
-                  key={id}
-                  readOnly={readOnly}
-                />
-                <FormControl.Feedback />
-              </Col>
-            </FormGroup>
-            <FormGroup>
-              <Col componentClass={ControlLabel} sm={3}>Name</Col>
-              <Col sm={9}>
-                <FormControl
-                  componentClass={TextInput}
-                  size={50}
-                  name="name"
-                  value={name}
-                  onChange={this.onChange}
-                  key={id}
-                  readOnly={readOnly}
-                />
-              </Col>
-            </FormGroup>
-            <FormGroup>
-              <Col smOffset={3} sm={6}>
-                {
-                  status === 'Draft' && (
-                    <ButtonToolbar>
-                      <Button
-                        disabled={!user.signedIn}
-                        bsStyle="primary"
-                        type="submit"
-                        onClick={this.handleSubmit.bind(this, 'Pending')}
+      // <React.Fragment>
+      //   {
+      //     (offlineProfileUserId === user.email || onlineProfileUserId === user.email) && (
+            <Panel>
+              <Panel.Heading>
+                <Panel.Title>{`Editing Storage Collaboration | Status: ${status}`}</Panel.Title>
+              </Panel.Heading>
+              <Panel.Body>
+                <Form horizontal onSubmit={this.handleSubmit}>
+                  <FormGroup>
+                    <Col componentClass={ControlLabel} sm={3}>Created</Col>
+                    <Col sm={9}>
+                      <FormControl.Static>
+                        {created.toDateString()}
+                      </FormControl.Static>
+                    </Col>
+                  </FormGroup>
+                  <FormGroup>
+                    <Col componentClass={ControlLabel} sm={3}>Name</Col>
+                    <Col sm={9}>
+                      <FormControl
+                        componentClass={TextInput}
+                        size={50}
+                        name="name"
+                        value={name}
+                        onChange={this.onChange}
+                        key={id}
+                        readOnly={readOnly}
+                      />
+                    </Col>
+                  </FormGroup>
+                  <FormGroup>
+                    <Col componentClass={ControlLabel} sm={3}>Seeking</Col>
+                    <Col sm={9}>
+                      <FormControl
+                        componentClass="select"
+                        name="seeking"
+                        value={seeking || ''}
+                        onChange={this.onChange}
+                        disabled={readOnly}
                       >
-                        Submit
-                      </Button>
-                      <LinkContainer to="/storage-collaboration-list">
-                        <Button bsStyle="link">Back</Button>
-                      </LinkContainer>
-                    </ButtonToolbar>
-                  )
-                }
+                        <option value="Storage">Storage</option>
+                        <option value="Other">Other</option>
+                      </FormControl>
+                    </Col>
+                  </FormGroup>
+                  <FormGroup>
+                    <Col componentClass={ControlLabel} sm={3}>Volume (m3)</Col>
+                    <Col sm={9}>
+                      <FormControl
+                        componentClass={NumInput}
+                        name="volume"
+                        value={volume}
+                        onChange={this.onChange}
+                        key={id}
+                        readOnly={readOnly}
+                      />
+                    </Col>
+                  </FormGroup>
+                  <FormGroup>
+                    <Col componentClass={ControlLabel} sm={3}>Price ($)</Col>
+                    <Col sm={9}>
+                      <FormControl
+                        componentClass={NumInput}
+                        name="price"
+                        value={price}
+                        onChange={this.onChange}
+                        key={id}
+                        readOnly={readOnly}
+                      />
+                    </Col>
+                  </FormGroup>
+                  <FormGroup>
+                    <Col componentClass={ControlLabel} sm={3}>Start Date</Col>
+                    <Col sm={9}>
+                      <FormControl
+                        componentClass={DateInput}
+                        onValidityChange={this.onValidityChange}
+                        name="startDate"
+                        value={startDate}
+                        onChange={this.onChange}
+                        key={id}
+                        readOnly={readOnly}
+                      />
+                      <FormControl.Feedback />
+                    </Col>
+                  </FormGroup>
+                  <FormGroup>
+                    <Col componentClass={ControlLabel} sm={3}>End Date</Col>
+                    <Col sm={9}>
+                      <FormControl
+                        componentClass={DateInput}
+                        onValidityChange={this.onValidityChange}
+                        name="endDate"
+                        value={endDate}
+                        onChange={this.onChange}
+                        key={id}
+                        readOnly={readOnly}
+                      />
+                      <FormControl.Feedback />
+                    </Col>
+                  </FormGroup>
+                  <FormGroup>
+                    <Col componentClass={ControlLabel} sm={3}>Cold Volume (m3)</Col>
+                    <Col sm={9}>
+                      <FormControl
+                        componentClass={NumInput}
+                        name="coldVolume"
+                        value={coldVolume}
+                        onChange={this.onChange}
+                        key={id}
+                        readOnly={readOnly}
+                      />
+                    </Col>
+                  </FormGroup>
+                  <FormGroup>
+                    <Col componentClass={ControlLabel} sm={3}>Cold Price ($)</Col>
+                    <Col sm={9}>
+                      <FormControl
+                        componentClass={NumInput}
+                        name="coldPrice"
+                        value={coldPrice}
+                        onChange={this.onChange}
+                        key={id}
+                        readOnly={readOnly}
+                      />
+                    </Col>
+                  </FormGroup>
+                  <FormGroup>
+                    <Col componentClass={ControlLabel} sm={3}>Cold Start Date</Col>
+                    <Col sm={9}>
+                      <FormControl
+                        componentClass={DateInput}
+                        onValidityChange={this.onValidityChange}
+                        name="coldStartDate"
+                        value={coldStartDate}
+                        onChange={this.onChange}
+                        key={id}
+                        readOnly={readOnly}
+                      />
+                      <FormControl.Feedback />
+                    </Col>
+                  </FormGroup>
+                  <FormGroup>
+                    <Col componentClass={ControlLabel} sm={3}>Cold End Date</Col>
+                    <Col sm={9}>
+                      <FormControl
+                        componentClass={DateInput}
+                        onValidityChange={this.onValidityChange}
+                        name="coldEndDate"
+                        value={coldEndDate}
+                        onChange={this.onChange}
+                        key={id}
+                        readOnly={readOnly}
+                      />
+                      <FormControl.Feedback />
+                    </Col>
+                  </FormGroup>
+                  <FormGroup>
+                    <Col smOffset={3} sm={6}>
+                      {
+                        status === 'Draft' && (
+                          <ButtonToolbar>
+                            <Button
+                              disabled={!user.signedIn}
+                              bsStyle="primary"
+                              type="submit"
+                              onClick={this.handleSubmit.bind(this, 'Pending')}
+                            >
+                              Submit
+                            </Button>
+                            <LinkContainer to="/storage-collaboration-list">
+                              <Button bsStyle="link">Back</Button>
+                            </LinkContainer>
+                          </ButtonToolbar>
+                        )
+                      }
 
-                {
-                  status === 'Pending' && onlineProfileUserId !== user.email && (
-                    <ButtonToolbar>
-                      <Button
-                        disabled={!user.signedIn}
-                        bsStyle="primary"
-                        type="submit"
-                        // onClick={(e) => this.handleSubmit('Accepted',e)}
-                        onClick={this.handleSubmit.bind(this, 'Accepted')}
+                      {
+                        status === 'Pending' && onlineProfileUserId !== user.email && (
+                          <ButtonToolbar>
+                            <Button
+                              disabled={!user.signedIn}
+                              bsStyle="primary"
+                              type="submit"
+                              // onClick={(e) => this.handleSubmit('Accepted',e)}
+                              onClick={this.handleSubmit.bind(this, 'Accepted')}
+                            >
+                              Accept
+                            </Button>
+                            <Button
+                              disabled={!user.signedIn}
+                              bsStyle="primary"
+                              type="submit"
+                              // onClick={() => { this.handleSubmit.bind(this, response)}}
+                              onClick={(e) => this.handleSubmit('Rejected', e)}
+                            >
+                              Reject
+                            </Button>
+                            <LinkContainer to="/storage-collaboration-list">
+                              <Button bsStyle="link">Back</Button>
+                            </LinkContainer>
+                          </ButtonToolbar>
+                        )
+                      }
 
-                      >
-                        Accept
-                      </Button>
-                      <Button
-                        disabled={!user.signedIn}
-                        bsStyle="primary"
-                        type="submit"
-                        // onClick={() => { this.handleSubmit.bind(this, response)}}
-                        onClick={(e) => this.handleSubmit('Rejected', e)}
-                      >
-                        Reject
-                      </Button>
-                      <LinkContainer to="/storage-collaboration-list">
-                        <Button bsStyle="link">Back</Button>
-                      </LinkContainer>
-                    </ButtonToolbar>
-                  )
-                }
+                      {
+                        status === 'Pending' && onlineProfileUserId === user.email && (
+                          <ButtonToolbar>
+                            <LinkContainer to="/storage-collaboration-list">
+                              <Button bsStyle="link">Back</Button>
+                            </LinkContainer>
+                          </ButtonToolbar>
+                        )
+                      }
 
-                {
-                  (status === 'Accepted' || status === 'Rejected') && (
-                    <ButtonToolbar>
-                      <LinkContainer to="/storage-collaboration-list">
-                        <Button bsStyle="link">Back</Button>
-                      </LinkContainer>
-                    </ButtonToolbar>
-                  )
-                }
-              </Col>
-            </FormGroup>
-            <FormGroup>
-              <Col smOffset={3} sm={9}>{validationMessage}</Col>
-            </FormGroup>
-          </Form>
-        </Panel.Body>
-      </Panel>
+                      {
+                        (status === 'Accepted' || status === 'Rejected') && (
+                          <ButtonToolbar>
+                            <LinkContainer to="/storage-collaboration-list">
+                              <Button bsStyle="link">Back</Button>
+                            </LinkContainer>
+                          </ButtonToolbar>
+                        )
+                      }
+                    </Col>
+                  </FormGroup>
+                  <FormGroup>
+                    <Col smOffset={3} sm={9}>{validationMessage}</Col>
+                  </FormGroup>
+                </Form>
+              </Panel.Body>
+            </Panel>
+      //     )
+      //   }
+      //   {
+      //     offlineProfileUserId !== user.email && onlineProfileUserId !== user.email && (
+      //       <React.Fragment>
+      //         <h1>You are not authorized to view this page!</h1>
+      //         <p>Try refreshing this page again.</p>
+      //       </React.Fragment>
+      //     )
+      //   }
+      // </React.Fragment>
     );
   }
 }

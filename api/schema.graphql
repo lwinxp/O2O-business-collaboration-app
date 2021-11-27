@@ -65,7 +65,6 @@ type StorageCollaboration {
   endDate: GraphQLDate
   coldVolume: Int
   coldPrice: Int
-  coldTemperature: Int
   coldStartDate:GraphQLDate
   coldEndDate: GraphQLDate
   status: StorageCollaborationStatusType
@@ -134,14 +133,13 @@ input StorageCollaborationInputs {
   endDate: GraphQLDate
   coldVolume: Int
   coldPrice: Int
-  coldTemperature: Int
   coldStartDate:GraphQLDate
   coldEndDate: GraphQLDate
   # status: StorageCollaborationStatusType
 }
 
-"""Inputs for object Update: all are optional. Whichever is specified will
-be set to the given value, undefined fields will remain unmodified."""
+"""Inputs for object Update: All user entered fields are mandatory, custom error message set in controller. 
+Whichever is specified will be set to the given value, undefined fields will remain unmodified."""
 
 input OnlineProfileUpdateInputs {
   name: String
@@ -181,7 +179,6 @@ input StorageCollaborationUpdateInputs {
   endDate: GraphQLDate
   coldVolume: Int
   coldPrice: Int
-  coldTemperature: Int
   coldStartDate:GraphQLDate
   coldEndDate: GraphQLDate
   status: StorageCollaborationStatusType
@@ -198,6 +195,7 @@ type Query {
     storageMax: Int
     search: String
     page: Int = 1
+    userId: String
   ): OnlineProfileListWithPages
   onlineProfile(id: Int!): OnlineProfile!
   offlineProfileList(
@@ -206,6 +204,7 @@ type Query {
     storageMax: Int
     search: String
     page: Int = 1
+    userId: String
   ): OfflineProfileListWithPages
   offlineProfile(id: Int!): OfflineProfile!
   storageCollaborationList(
@@ -214,6 +213,8 @@ type Query {
     storageMax: Int
     search: String
     page: Int = 1
+    offlineProfileUserId: String
+    onlineProfileUserId: String
   ): StorageCollaborationListWithPages
   storageCollaboration(id: Int!): StorageCollaboration!
 }

@@ -23,7 +23,7 @@ class StorageCollaborationRowPlain extends React.Component {
 
     const tableRow = (
       <tr>
-        <td>{storageCollaboration.id}</td>
+        {/* <td>{storageCollaboration.id}</td> */}
         <td>{storageCollaboration.name}</td>
         <td>{storageCollaboration.seeking}</td>
         <td>{storageCollaboration.volume}</td>
@@ -65,15 +65,15 @@ export default function StorageCollaborationTable({ storageCollaborations, brows
     <Table bordered condensed hover responsive>
       <thead>
         <tr>
-          <th>ID</th>
+          {/* <th>ID</th> */}
           <th>Name</th>
           <th>Seeking</th>
-          <th>Volume</th>
-          <th>Price</th>
+          <th>Volume (m3)</th>
+          <th>Price ($)</th>
           <th>Start Date</th>
           <th>End Date</th>
-          <th>Cold Volume</th>
-          <th>Cold Price</th>
+          <th>Cold Volume (m3)</th>
+          <th>Cold Price ($)</th>
           <th>Cold Start Date</th>
           <th>Cold End Date</th>
           <th>Status</th>

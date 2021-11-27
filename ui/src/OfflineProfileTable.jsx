@@ -14,8 +14,8 @@ class OfflineProfileRowPlain extends React.Component {
       browse, offlineProfile, location: { search }, index,
     } = this.props;
     
-    console.log('offlineProfile:', offlineProfile);
-    console.log('offlineProfile.reserved:', offlineProfile.reserved);
+    // console.log('offlineProfile:', offlineProfile);
+    // console.log('offlineProfile.reserved:', offlineProfile.reserved);
 
     const user = this.context;
     const disabled = !user.signedIn;
@@ -28,7 +28,7 @@ class OfflineProfileRowPlain extends React.Component {
 
     const tableRow = (
       <tr>
-        <td>{offlineProfile.id}</td>
+        {/* <td>{offlineProfile.id}</td> */}
         <td>{offlineProfile.name}</td>
         <td>{offlineProfile.seeking}</td>
         <td>{offlineProfile.address}</td>
@@ -69,16 +69,16 @@ export default function OfflineProfileTable({ offlineProfiles, browse }) {
     <Table bordered condensed hover responsive>
       <thead>
         <tr>
-          <th>ID</th>
+          {/* <th>ID</th> */}
           <th>Name</th>
           <th>Seeking</th>
           <th>Address</th>
           <th>Website</th>
           <th>Postal</th>
-          <th>Total Storage</th>
-          <th>Total Cold Storage</th>
-          <th>Available Storage</th>
-          <th>Available Cold Storage</th>
+          <th>Total Storage (m3)</th>
+          <th>Total Cold Storage (m3)</th>
+          <th>Available Storage (m3)</th>
+          <th>Available Cold Storage (m3)</th>
           <th>Reserved</th>
           <th>Created</th>
         </tr>

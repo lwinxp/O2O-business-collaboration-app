@@ -3,8 +3,8 @@ import URLSearchParams from 'url-search-params';
 import { Panel, Pagination, Button } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
-import ProfileFilter from './ProfileFilter.jsx';
-import ProfileSearch from './ProfileSearch.jsx';
+// import ProfileFilter from './ProfileFilter.jsx';
+// import ProfileSearch from './OnlineProfileSearch.jsx';
 
 import graphQLFetch from './graphQLFetch.js';
 import withToast from './withToast.jsx';
@@ -39,7 +39,7 @@ class OnlineProfileList extends React.Component {
     return data;
   }
 
-  static async fetchData(match, search, showError) {
+  static async fetchData(match, search, showError, user) {
     const params = new URLSearchParams(search);
     const vars = { hasSelection: false, selectedId: 0 };
     if (params.get('seeking')) vars.seeking = params.get('seeking');
@@ -60,6 +60,10 @@ class OnlineProfileList extends React.Component {
     if (Number.isNaN(page)) page = 1;
     vars.page = page;
 
+    if (user) {
+      vars.userId = user.email;
+    }
+
     const query = `query onlineProfileList(
       $seeking: SeekingStatusType
       $storageMin: Int
@@ -67,12 +71,14 @@ class OnlineProfileList extends React.Component {
       $hasSelection: Boolean!
       $selectedId: Int!
       $page: Int
+      $userId: String
     ) {
       onlineProfileList(
         seeking: $seeking
         storageMin: $storageMin
         storageMax: $storageMax
         page: $page
+        userId: $userId
       ) {
         onlineProfiles {
           id name seeking website product
@@ -101,9 +107,9 @@ class OnlineProfileList extends React.Component {
       selectedOnlineProfile,
       pages,
     };
-    console.log('selectedOnlineProfile:', selectedOnlineProfile);
-    console.log('pages:', pages);
-    console.log('onlineProfiles:', onlineProfiles);
+    // console.log('selectedOnlineProfile:', selectedOnlineProfile);
+    // console.log('pages:', pages);
+    // console.log('onlineProfiles:', onlineProfiles);
 
 
     const user = store.userData ? store.userData.user : null;
@@ -114,13 +120,15 @@ class OnlineProfileList extends React.Component {
   }
 
   async componentDidMount() {
-    const { onlineProfiles } = this.state;
-    if (onlineProfiles == null) this.loadData();
+    // const { onlineProfiles } = this.state;
+    // if (onlineProfiles == null) this.loadData();
     const { user } = this.state;
     if (user == null) {
       const data = await OnlineProfileList.fetchUserData();
       this.setState({ user: data.user });
     }
+    const { onlineProfiles } = this.state;
+    if (onlineProfiles == null) this.loadData(this.state.user);
   }
 
   componentDidUpdate(prevProps) {
@@ -138,9 +146,9 @@ class OnlineProfileList extends React.Component {
     this.setState({ user });
   }
 
-  async loadData() {
+  async loadData(user) {
     const { location: { search }, match, showError } = this.props;
-    const data = await OnlineProfileList.fetchData(match, search, showError);
+    const data = await OnlineProfileList.fetchData(match, search, showError, user);
     if (data) {
       this.setState({
         onlineProfiles: data.onlineProfileList.onlineProfiles,

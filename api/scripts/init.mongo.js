@@ -20,7 +20,7 @@ db.onlineProfiles.remove({});
 const onlineProfilesDB = [
   {
     id: 1,
-    userId: 'test@gmail.com',
+    userId: 'limxuanping@gmail.com', // replace with your own email 1
     seeking: 'Storage',
     name: 'Big Fish',
     website: 'www.bigfish.com',
@@ -31,7 +31,7 @@ const onlineProfilesDB = [
   },
   {
     id: 2,
-    userId: 'test@gmail.com',
+    userId: 'limxuanping.govtech@gmail.com', // replace with your own email 2
     seeking: 'Storage',
     name: 'Small Fish',
     website: 'www.smallfish.com',
@@ -62,34 +62,34 @@ db.offlineProfiles.remove({});
 const offlineProfilesDB = [
   {
     id: 1,
-    userId: 'test@gmail.com',
+    userId: 'limxuanping@gmail.com', // replace with your own email 1
     seeking: 'Storage',
     name: 'Uncle Joe Fishmonger',
     website: 'www.joefish.com',
     product: 'seafood',
     address: '123 Fishery Rd',
     postal: '123456',
-    totalStorage: 10,
-    totalColdStorage: 5,
-    availStorage: 10,
-    availColdStorage: 5,
-    reserved: true,
-    reservationContact: 'test@email.com',
+    totalStorage: 100,
+    totalColdStorage: 100,
+    availStorage: 100,
+    availColdStorage: 100,
+    reserved: false,
+    reservationContact: null,
     created: new Date('2021-11-21'),
   },
   {
     id: 2,
-    userId: 'test@gmail.com',
+    userId: 'limxuanping.govtech@gmail.com', // replace with your own email 2
     seeking: 'Storage',
     name: 'Uncle Ben Fishmonger',
     website: 'www.benfish.com',
     product: 'seafood',
     address: '456 Fishery Rd',
     postal: '654321',
-    totalStorage: 10,
-    totalColdStorage: 5,
-    availStorage: 10,
-    availColdStorage: 5,
+    totalStorage: 200,
+    totalColdStorage: 200,
+    availStorage: 200,
+    availColdStorage: 200,
     reserved: false,
     reservationContact: null,
     created: new Date('2021-11-21'),
@@ -116,8 +116,8 @@ db.storageCollaborations.remove({});
 const storageCollaborationsDB = [
   {
     id: 1,
-    onlineProfileUserId: 'test@gmail.com',
-    offlineProfileUserId: 'test@gmail.com',
+    onlineProfileUserId: 'limxuanping@gmail.com', // replace with your own email 1
+    offlineProfileUserId: 'limxuanping.govtech@gmail.com', // replace with your own email 2
     offlineProfileId: 123,
     name: 'Big Fish - Uncle Joe Storage Collaboration',
     seeking: 'Storage',
@@ -129,25 +129,25 @@ const storageCollaborationsDB = [
     coldPrice: 5,
     coldStartDate: new Date('2021-11-21'),
     coldEndDate: new Date('2021-12-21'),
-    status: 'Pending',
+    status: 'Accepted',
     created: new Date('2021-11-21'),
   },
   {
     id: 2,
-    onlineProfileUserId: 'test@gmail.com',
-    offlineProfileUserId: 'test@gmail.com',
+    onlineProfileUserId: 'limxuanping@gmail.com', // replace with your own email 1
+    offlineProfileUserId: 'limxuanping.govtech@gmail.com', // replace with your own email 2
     offlineProfileId: 123,
     name: 'Small Fish - Uncle Ben Storage Collaboration',
     seeking: 'Storage',
-    volume: 10,
-    price: 10,
+    volume: 20,
+    price: 20,
     startDate: new Date('2021-11-21'),
     endDate: new Date('2021-12-21'),
-    coldVolume: 5,
-    coldPrice: 5,
+    coldVolume: 10,
+    coldPrice: 10,
     coldStartDate: new Date('2021-11-21'),
     coldEndDate: new Date('2021-12-21'),
-    status: 'Pending',
+    status: 'Rejected',
     created: new Date('2021-11-21'),
   },
 ];

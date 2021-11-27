@@ -10,6 +10,8 @@ async function get(_, { id }) {
 
 async function list() {
   const db = getDb();
+  // console.log('small list offlineProfileUserId:', offlineProfileUserId);
+
   const storageCollaborations = await db.collection('storageCollaborations').find({}).toArray();
   return storageCollaborations;
 }
@@ -17,20 +19,34 @@ async function list() {
 const PAGE_SIZE = 10;
 
 async function list(_, {
-  status, storageMin, storageMax, search, page,
+  status, storageMin, storageMax, search, page, offlineProfileUserId, onlineProfileUserId,
 }) {
+  // console.log('offlineProfileUserId:', offlineProfileUserId);
+  // console.log('onlineProfileUserId:', onlineProfileUserId);
+
   const db = getDb();
-  const filter = {};
+  const filter = {$or:[{'offlineProfileUserId':offlineProfileUserId}, {'onlineProfileUserId':onlineProfileUserId }]};
+  // const filter = {'offlineProfileUserId':offlineProfileUserId};
+  // const filter = {'onlineProfileUserId':onlineProfileUserId};
 
-  if (status) filter.status = status;
+  // filter = {}
+  // if (offlineProfileUserId) filter.offlineProfileUserId = offlineProfileUserId;
+  // if (onlineProfileUserId) filter.onlineProfileUserId = onlineProfileUserId;
 
-  if (storageMin !== undefined || storageMax !== undefined) {
-    filter.effort = {};
-    if (storageMin !== undefined) filter.effort.$gte = storageMin;
-    if (storageMax !== undefined) filter.effort.$lte = storageMax;
-  }
+  // if (status) filter.status = status;
 
-  if (search) filter.$text = { $search: search };
+  // if (storageMin !== undefined || storageMax !== undefined) {
+  //   filter.storage = {};
+  //   if (storageMin !== undefined) filter.storage.$gte = storageMin;
+  //   if (storageMax !== undefined) filter.storage.$lte = storageMax;
+  // }
+  // console.log('search:', search);
+
+  // if (search) filter.$text = { $search: search };
+  // if (search && offlineProfileUserId) filter.$text = { $search: search, $offlineProfileUserId: offlineProfileUserId };
+
+
+  // console.log('storageCollaborations filter:', filter);
 
   const cursor = db.collection('storageCollaborations').find(filter)
     .sort({ id: 1 })
@@ -42,15 +58,23 @@ async function list(_, {
   const pages = Math.ceil(totalCount / PAGE_SIZE);
   return { storageCollaborations, pages };
 }
+// returned storageCollaborations should be filtered by offlineProfileUserId
 
-function validate(storageCollaboration) {
+function validateAdd(storageCollaboration) {
   const errors = [];
-  // if (issue.title.length < 3) {
-  //   errors.push('Field "title" must be at least 3 characters long.');
-  // }
-  // if (issue.status === 'Assigned' && !issue.owner) {
-  //   errors.push('Field "owner" is required when status is "Assigned"');
-  // }
+  if (!storageCollaboration.name || !storageCollaboration.seeking) {
+    errors.push('All fields are mandatory. Please fill in all fields');
+  }
+  if (errors.length > 0) {
+    throw new UserInputError('Invalid input(s)', { errors });
+  }
+}
+
+function validateUpdate(storageCollaboration) {
+  const errors = [];
+  if (!storageCollaboration.name || !storageCollaboration.seeking || !storageCollaboration.volume || !storageCollaboration.price || !storageCollaboration.startDate || !storageCollaboration.endDate || !storageCollaboration.coldVolume || !storageCollaboration.coldPrice || !storageCollaboration.coldStartDate || !storageCollaboration.coldEndDate) {
+    errors.push('All fields are mandatory. Please fill in all fields');
+  }
   if (errors.length > 0) {
     throw new UserInputError('Invalid input(s)', { errors });
   }
@@ -58,7 +82,7 @@ function validate(storageCollaboration) {
 
 async function add(_, { storageCollaboration }) {
   const db = getDb();
-  validate(storageCollaboration);
+  validateAdd(storageCollaboration);
 
   const newStorageCollaboration = Object.assign({}, storageCollaboration);
   newStorageCollaboration.created = new Date();
@@ -68,44 +92,44 @@ async function add(_, { storageCollaboration }) {
   const result = await db.collection('storageCollaborations').insertOne(newStorageCollaboration);
   const savedStorageCollaboration = await db.collection('storageCollaborations')
     .findOne({ _id: result.insertedId });
-  console.log('add - savedStorageCollaboration:', savedStorageCollaboration);
+  // console.log('add - savedStorageCollaboration:', savedStorageCollaboration);
   return savedStorageCollaboration;
 }
 
 async function update(_, { id, changes }) {
   const db = getDb();
-  console.log('update - changes:', changes);
+  // console.log('update - changes:', changes);
 
   try {
     if (changes.name || changes.seeking || changes.status || changes.volume || changes.price || changes.startDate || changes.endDate || changes.coldVolume || changes.coldPrice || changes.coldStartDate || changes.coldEndDate) {
       const storageCollaboration = await db.collection('storageCollaborations').findOne({ id });
-      console.log('update - storageCollaboration db object:', storageCollaboration);
+      // console.log('update - storageCollaboration db object:', storageCollaboration);
 
       Object.assign(storageCollaboration, changes);
-      validate(storageCollaboration);
+      validateUpdate(storageCollaboration);
 
       await db.collection('storageCollaborations').updateOne({ id }, { $set: changes });
       var savedStorageCollaboration = await db.collection('storageCollaborations').findOne({ id });
-      console.log('update - savedStorageCollaboration:', savedStorageCollaboration);
+      // console.log('update - savedStorageCollaboration:', savedStorageCollaboration);
     }
 
     if (changes.status && changes.status === 'Accepted') {
       const ObjectID = require('mongodb').ObjectID;   
       
       const storageCollaborationTarget = await db.collection('offlineProfiles').findOne({"_id": new ObjectID(changes.offlineProfileId)});
-      console.log('storageCollaborationTarget:',storageCollaborationTarget);
+      // console.log('storageCollaborationTarget:',storageCollaborationTarget);
     
       const storageCollaborationTargetId = storageCollaborationTarget.id
-      console.log('storageCollaborationTargetId 1:',storageCollaborationTargetId);
+      // console.log('storageCollaborationTargetId 1:',storageCollaborationTargetId);
     
       const newVolume = storageCollaborationTarget.availStorage - changes.volume
-      console.log('newVolume:',newVolume);
+      // console.log('newVolume:',newVolume);
     
       const newColdVolume = storageCollaborationTarget.availColdStorage - changes.coldVolume
-      console.log('newColdVolume:',newColdVolume);
+      // console.log('newColdVolume:',newColdVolume);
     
       const volumeChange = {availStorage: newVolume, availColdStorage: newColdVolume}
-      console.log('volumeChange 1:',volumeChange);
+      // console.log('volumeChange 1:',volumeChange);
     
       const reservedChange = {reserved: true}
       const reservationContact = {reservationContact: changes.onlineProfileUserId}
@@ -117,10 +141,10 @@ async function update(_, { id, changes }) {
       await db.collection('offlineProfiles').updateOne({"_id": new ObjectID(changes.offlineProfileId)}, { $set: reservationContact });
 
       const savedStorageCollaborationTarget = await db.collection('offlineProfiles').findOne({ storageCollaborationTargetId });
-      console.log('update - savedStorageCollaborationTarget:', savedStorageCollaborationTarget);
+      // console.log('update - savedStorageCollaborationTarget:', savedStorageCollaborationTarget);
 
-      console.log('storageCollaborationTargetId 2:',storageCollaborationTargetId);
-      console.log('volumeChange 2:',volumeChange);
+      // console.log('storageCollaborationTargetId 2:',storageCollaborationTargetId);
+      // console.log('volumeChange 2:',volumeChange);
     }
 
   } catch (err) {

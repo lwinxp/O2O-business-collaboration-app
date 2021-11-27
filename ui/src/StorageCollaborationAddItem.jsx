@@ -10,6 +10,14 @@ import withToast from './withToast.jsx';
 import UserContext from './UserContext.js';
 
 class StorageCollaborationAddItem extends React.Component {
+  static async fetchUserData(cookie) {
+    const query = `query { user {
+      signedIn givenName email
+    }}`;
+    const data = await graphQLFetch(query, null, null, cookie);
+    return data;
+  }
+
   constructor(props) {
     super(props);
     this.state = {
@@ -18,6 +26,15 @@ class StorageCollaborationAddItem extends React.Component {
     this.showModal = this.showModal.bind(this);
     this.hideModal = this.hideModal.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+  }
+  
+  async componentDidMount() {
+    const { user } = this.state;
+    if (user == null) {
+      const data = await StorageCollaborationAddItem.fetchUserData();
+      this.setState({ user: data.user });
+    }
+    // console.log('StorageCollaborationAddItem componentDidMount fetchUserData:', this.state.user);
   }
 
   showModal() {
@@ -28,9 +45,12 @@ class StorageCollaborationAddItem extends React.Component {
     this.setState({ showing: false });
   }
 
-  async handleSubmit(e) {
+  async handleSubmit(userContext, e) {
     e.preventDefault();
     this.hideModal();
+
+    // console.log('StorageCollaborationAddItem user:', user);
+    // console.log('StorageCollaborationAddItem this.state.user:', this.state.user);
 
     const { offlineProfileId, offlineProfileUserId, userObject } = this.props;
 
@@ -40,7 +60,7 @@ class StorageCollaborationAddItem extends React.Component {
       seeking: form.seeking.value,
       offlineProfileId,
       offlineProfileUserId,
-      onlineProfileUserId: userObject.email, // storageCollaboration don't have userId
+      onlineProfileUserId: this.state.user.email, // user from prop and context had flakiness, did not add to DB and cause error. to solve, here used direct async query for user in async componentDidUMount for speed and guarantee
     };
     const query = `mutation storageCollaborationAdd($storageCollaboration: StorageCollaborationInputs!) {
       storageCollaborationAdd(storageCollaboration: $storageCollaboration) {
@@ -48,6 +68,7 @@ class StorageCollaborationAddItem extends React.Component {
       }
     }`;
 
+    // console.log('storage add item onlineProfileUserId:', storageCollaboration);
     const { showError } = this.props;
     const data = await graphQLFetch(query, { storageCollaboration }, showError);
     if (data) {
@@ -88,7 +109,8 @@ class StorageCollaborationAddItem extends React.Component {
               <Button
                 type="button"
                 bsStyle="primary"
-                onClick={this.handleSubmit}
+                onClick={(e) => this.handleSubmit(user, e)}
+                // onClick={() => { this.handleSubmit.bind(this, user)}}
               >
                 Submit
               </Button>

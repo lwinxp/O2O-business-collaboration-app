@@ -17,17 +17,18 @@ async function list() {
 const PAGE_SIZE = 10;
 
 async function list(_, {
-  status, storageMin, storageMax, search, page,
+  status, storageMin, storageMax, search, page, userId,
 }) {
   const db = getDb();
   const filter = {};
+  if (userId) filter.userId = userId;
 
   if (status) filter.status = status;
 
   if (storageMin !== undefined || storageMax !== undefined) {
-    filter.effort = {};
-    if (storageMin !== undefined) filter.effort.$gte = storageMin;
-    if (storageMax !== undefined) filter.effort.$lte = storageMax;
+    filter.storage = {};
+    if (storageMin !== undefined) filter.storage.$gte = storageMin;
+    if (storageMax !== undefined) filter.storage.$lte = storageMax;
   }
 
   if (search) filter.$text = { $search: search };
@@ -43,9 +44,21 @@ async function list(_, {
   return { offlineProfiles, pages };
 }
 
-function validate(offineProfile) {
+function validateAdd(offlineProfile) {
   const errors = [];
+  if (!offlineProfile.name || !offlineProfile.seeking) {
+    errors.push('All fields are mandatory. Please fill in all fields');
+  }
+  if (errors.length > 0) {
+    throw new UserInputError('Invalid input(s)', { errors });
+  }
+}
 
+function validateUpdate(offlineProfile) {
+  const errors = [];
+  if (!offlineProfile.name || !offlineProfile.seeking || !offlineProfile.address || !offlineProfile.postal || !offlineProfile.product || !offlineProfile.website || !offlineProfile.totalStorage || !offlineProfile.totalColdStorage) {
+    errors.push('All fields are mandatory. Please fill in all fields');
+  }
   if (errors.length > 0) {
     throw new UserInputError('Invalid input(s)', { errors });
   }
@@ -53,7 +66,7 @@ function validate(offineProfile) {
 
 async function add(_, { offlineProfile }) {
   const db = getDb();
-  validate(offlineProfile);
+  validateAdd(offlineProfile);
 
   const newOfflineProfile = Object.assign({}, offlineProfile);
   newOfflineProfile.created = new Date();
@@ -65,25 +78,25 @@ async function add(_, { offlineProfile }) {
   const result = await db.collection('offlineProfiles').insertOne(newOfflineProfile);
   const savedOfflineProfile = await db.collection('offlineProfiles')
     .findOne({ _id: result.insertedId });
-  console.log('add - savedOfflineProfile:', savedOfflineProfile);
+  // console.log('add - savedOfflineProfile:', savedOfflineProfile);
   return savedOfflineProfile;
 }
 
 async function update(_, { id, changes }) {
   const db = getDb();
-  console.log('update - changes:', changes);
+  // console.log('update - changes:', changes);
   if (changes.name || changes.seeking || changes.product || changes.website || changes.address || changes.postal || changes.availStorage || changes.availColdStorage || changes.totalStorage || changes.totalColdStorage) {
     // changes.availStorage = changes.totalStorage
     // changes.availColdStorage = changes.totalColdStorage
     const offlineProfile = await db.collection('offlineProfiles').findOne({ id });
-    console.log('update - offlineProfile db object:', offlineProfile);
+    // console.log('update - offlineProfile db object:', offlineProfile);
 
     Object.assign(offlineProfile, changes);
-    validate(offlineProfile);
+    validateUpdate(offlineProfile);
   }
   await db.collection('offlineProfiles').updateOne({ id }, { $set: changes });
   const savedOfflineProfile = await db.collection('offlineProfiles').findOne({ id });
-  console.log('update - savedOfflineProfile:', savedOfflineProfile);
+  // console.log('update - savedOfflineProfile:', savedOfflineProfile);
   return savedOfflineProfile;
 }
 

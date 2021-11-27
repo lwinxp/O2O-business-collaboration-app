@@ -101,16 +101,16 @@ class PublicOfflineProfile extends React.Component {
     }`;
     // userId: String
 
-    console.log('query:', query);
+    // console.log('query:', query);
 
     const { id, created, userId, ...changes } = offlineProfile;
-    console.log('changes:', changes);
+    // console.log('changes:', changes);
 
     const { showSuccess, showError } = this.props;
-    console.log('======reached here========');
+    // console.log('======reached here========');
 
     const data = await graphQLFetch(query, { changes, id }, showError);
-    console.log('data:', data);
+    // console.log('PublicOfflineProfile data:', data);
 
     if (data) {
       this.setState({ offlineProfile: data.offlineProfileUpdate });
@@ -165,7 +165,7 @@ class PublicOfflineProfile extends React.Component {
     return (
       <Panel>
         <Panel.Heading>
-          <Panel.Title>{`Viewing offline profile: ${id} | Reserved: ${reserved}`}</Panel.Title>
+          <Panel.Title>{`Viewing Offline Profile | Reserved: ${reserved}`}</Panel.Title>
         </Panel.Heading>
         <Panel.Body>
           <Form horizontal onSubmit={this.handleSubmit}>
@@ -259,7 +259,7 @@ class PublicOfflineProfile extends React.Component {
               </Col>
             </FormGroup>
             <FormGroup>
-              <Col componentClass={ControlLabel} sm={3}>Total Storage</Col>
+              <Col componentClass={ControlLabel} sm={3}>Total Storage (m3)</Col>
               <Col sm={9}>
                 <FormControl
                   componentClass={NumInput}
@@ -272,7 +272,7 @@ class PublicOfflineProfile extends React.Component {
               </Col>
             </FormGroup>
             <FormGroup>
-              <Col componentClass={ControlLabel} sm={3}>Total Cold Storage</Col>
+              <Col componentClass={ControlLabel} sm={3}>Total Cold Storage (m3)</Col>
               <Col sm={9}>
                 <FormControl
                   componentClass={NumInput}
@@ -288,7 +288,7 @@ class PublicOfflineProfile extends React.Component {
               Available Storage, Available Cold Storage, Reservation Contact are Auto-Generated
             </h4>
             <FormGroup>
-              <Col componentClass={ControlLabel} sm={3}>Available Storage</Col>
+              <Col componentClass={ControlLabel} sm={3}>Available Storage (m3)</Col>
               <Col sm={9}>
                 <FormControl
                   componentClass={TextInput}
@@ -301,7 +301,7 @@ class PublicOfflineProfile extends React.Component {
               </Col>
             </FormGroup>
             <FormGroup>
-              <Col componentClass={ControlLabel} sm={3}>Available Cold Storage</Col>
+              <Col componentClass={ControlLabel} sm={3}>Available Cold Storage (m3)</Col>
               <Col sm={9}>
                 <FormControl
                   componentClass={TextInput}
@@ -331,14 +331,22 @@ class PublicOfflineProfile extends React.Component {
                 <ButtonToolbar>
 
                   {
-                    !reserved && (
-                      <StorageCollaborationAddItem offlineProfileId={_id} offlineProfileUserId={userId} userObject={user} />
+                    !reserved && (userId !== user.email) && (
+                      <StorageCollaborationAddItem offlineProfileId={_id} offlineProfileUserId={userId} user={user} />
                     )
                   }
                   <LinkContainer to="/browse-offline-profile">
                     <Button bsStyle="link">Back</Button>
                   </LinkContainer>
                 </ButtonToolbar>
+              </Col>
+            </FormGroup>
+            <FormGroup>
+              <Col sm={12}>
+                <FormControl.Static>
+                  Note: Users can only create Storage Collaborations for Offline Profiles (i) of other users, which (ii) have not been reserved.
+                  Create Storage Collaboration button will be available where valid.
+                </FormControl.Static>
               </Col>
             </FormGroup>
             <FormGroup>

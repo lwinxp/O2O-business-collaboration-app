@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom';
 import graphQLFetch from './graphQLFetch.js';
 import withToast from './withToast.jsx';
 
-class ProfileSearch extends React.Component {
+class OnlineProfileSearch extends React.Component {
   constructor(props) {
     super(props);
 
@@ -16,7 +16,7 @@ class ProfileSearch extends React.Component {
   onChangeSelection({ value }) {
     const { history } = this.props;
     // history.push(`/edit/${value}`);
-    history.push(`/online-profile-list/online-profile/${value}`);
+    history.push(`/browse-online-profile/online-profile/${value}`);
   }
 
   async loadOptions(term) {
@@ -48,4 +48,4 @@ class ProfileSearch extends React.Component {
   }
 }
 
-export default withRouter(withToast(ProfileSearch));
+export default withRouter(withToast(OnlineProfileSearch));

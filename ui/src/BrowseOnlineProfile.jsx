@@ -3,8 +3,8 @@ import URLSearchParams from 'url-search-params';
 import { Panel, Pagination, Button } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
-import ProfileFilter from './ProfileFilter.jsx';
-import ProfileSearch from './ProfileSearch.jsx';
+// import ProfileFilter from './ProfileFilter.jsx';
+import OnlineProfileSearch from './OnlineProfileSearch.jsx';
 
 import graphQLFetch from './graphQLFetch.js';
 import withToast from './withToast.jsx';
@@ -173,16 +173,16 @@ class OnlineProfileList extends React.Component {
     return (
       <React.Fragment>
         <h3>Browse Online Profiles</h3>
-        <ProfileSearch />
+        <OnlineProfileSearch />
         <br />
-        <Panel>
+        {/* <Panel>
           <Panel.Heading>
             <Panel.Title toggle>Filter</Panel.Title>
           </Panel.Heading>
           <Panel.Body collapsible>
             <ProfileFilter urlBase="/browse-online-profile" />
           </Panel.Body>
-        </Panel>
+        </Panel> */}
 
         <OnlineProfileTable onlineProfiles={onlineProfiles} browse />
 

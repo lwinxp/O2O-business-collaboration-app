@@ -3,8 +3,8 @@ import URLSearchParams from 'url-search-params';
 import { Panel, Pagination, Button } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
-import ProfileFilter from './ProfileFilter.jsx';
-import ProfileSearch from './ProfileSearch.jsx';
+// import ProfileFilter from './ProfileFilter.jsx';
+// import ProfileSearch from './OnlineProfileSearch.jsx';
 
 import graphQLFetch from './graphQLFetch.js';
 import withToast from './withToast.jsx';
@@ -39,7 +39,7 @@ class OfflineProfileList extends React.Component {
     return data;
   }
 
-  static async fetchData(match, search, showError) {
+  static async fetchData(match, search, showError, user) {
     const params = new URLSearchParams(search);
     const vars = { hasSelection: false, selectedId: 0 };
     if (params.get('seeking')) vars.seeking = params.get('seeking');
@@ -60,6 +60,10 @@ class OfflineProfileList extends React.Component {
     if (Number.isNaN(page)) page = 1;
     vars.page = page;
 
+    if (user) {
+      vars.userId = user.email;
+    }
+
     const query = `query offlineProfileList(
       $seeking: SeekingStatusType
       $storageMin: Int
@@ -67,12 +71,14 @@ class OfflineProfileList extends React.Component {
       $hasSelection: Boolean!
       $selectedId: Int!
       $page: Int
+      $userId: String
     ) {
       offlineProfileList(
         seeking: $seeking
         storageMin: $storageMin
         storageMax: $storageMax
         page: $page
+        userId: $userId
       ) {
         offlineProfiles {
           id name seeking website 
@@ -112,13 +118,15 @@ class OfflineProfileList extends React.Component {
   }
 
   async componentDidMount() {
-    const { offlineProfiles } = this.state;
-    if (offlineProfiles == null) this.loadData();
+    // const { offlineProfiles } = this.state;
+    // if (offlineProfiles == null) this.loadData();
     const { user } = this.state;
     if (user == null) {
       const data = await OfflineProfileList.fetchUserData();
       this.setState({ user: data.user });
     }
+    const { offlineProfiles } = this.state;
+    if (offlineProfiles == null) this.loadData(this.state.user);
   }
 
   componentDidUpdate(prevProps) {
@@ -136,9 +144,9 @@ class OfflineProfileList extends React.Component {
     this.setState({ user });
   }
 
-  async loadData() {
+  async loadData(user) {
     const { location: { search }, match, showError } = this.props;
-    const data = await OfflineProfileList.fetchData(match, search, showError);
+    const data = await OfflineProfileList.fetchData(match, search, showError, user);
     if (data) {
       this.setState({
         offlineProfiles: data.offlineProfileList.offlineProfiles,

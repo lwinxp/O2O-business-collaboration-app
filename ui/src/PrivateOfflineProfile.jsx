@@ -102,19 +102,19 @@ class PrivateOfflineProfile extends React.Component {
     }`;
     // userId: String
 
-    console.log('query:', query);
+    // console.log('query:', query);
 
     const { id, created, userId, ...changes } = offlineProfile;
-    console.log('changes:', changes);
+    // console.log('changes:', changes);
 
     changes.availStorage = changes.totalStorage;
     changes.availColdStorage = changes.totalColdStorage;
 
     const { showSuccess, showError } = this.props;
-    console.log('======reached here========');
+    // console.log('======reached here========');
 
     const data = await graphQLFetch(query, { changes, id }, showError);
-    console.log('data:', data);
+    // console.log('PrivateOfflineProfile data:', data);
 
     if (data) {
       this.setState({ offlineProfile: data.offlineProfileUpdate });
@@ -160,201 +160,216 @@ class PrivateOfflineProfile extends React.Component {
     }
 
     const { offlineProfile: { name, seeking } } = this.state;
-    const { offlineProfile: { product, website, address, postal, availStorage, availColdStorage, totalStorage, totalColdStorage, reserved, reservationContact } } = this.state;
+    const { offlineProfile: { product, website, address, postal, availStorage, availColdStorage, totalStorage, totalColdStorage, reserved, reservationContact, userId } } = this.state;
     const { offlineProfile: { created } } = this.state;
 
     const user = this.context;
 
     return (
-      <Panel>
-        <Panel.Heading>
-          <Panel.Title>{`Editing offline profile: ${id} | Reserved: ${reserved}`}</Panel.Title>
-        </Panel.Heading>
-        <Panel.Body>
-          <Form horizontal onSubmit={this.handleSubmit}>
-            <FormGroup>
-              <Col componentClass={ControlLabel} sm={3}>Created</Col>
-              <Col sm={9}>
-                <FormControl.Static>
-                  {created.toDateString()}
-                </FormControl.Static>
-              </Col>
-            </FormGroup>
-            <FormGroup>
-              <Col componentClass={ControlLabel} sm={3}>Name</Col>
-              <Col sm={9}>
-                <FormControl
-                  componentClass={TextInput}
-                  size={50}
-                  name="name"
-                  value={name}
-                  onChange={this.onChange}
-                  key={id}
-                  readOnly={reserved}
-                />
-              </Col>
-            </FormGroup>
-            <FormGroup>
-              <Col componentClass={ControlLabel} sm={3}>Seeking</Col>
-              <Col sm={9}>
-                <FormControl
-                  componentClass="select"
-                  name="seeking"
-                  value={seeking || ''}
-                  onChange={this.onChange}
-                  readOnly={reserved}
-                >
-                  <option value="Storage">Storage</option>
-                  <option value="Other">Other</option>
-                </FormControl>
-              </Col>
-            </FormGroup>
-            <FormGroup>
-              <Col componentClass={ControlLabel} sm={3}>Product</Col>
-              <Col sm={9}>
-                <FormControl
-                  componentClass={TextInput}
-                  name="product"
-                  value={product}
-                  onChange={this.onChange}
-                  key={id}
-                  readOnly={reserved}
-                />
-              </Col>
-            </FormGroup>
-            <FormGroup>
-              <Col componentClass={ControlLabel} sm={3}>Website</Col>
-              <Col sm={9}>
-                <FormControl
-                  componentClass={TextInput}
-                  name="website"
-                  value={website}
-                  onChange={this.onChange}
-                  key={id}
-                  readOnly={reserved}
-                />
-              </Col>
-            </FormGroup>
-            <FormGroup>
-              <Col componentClass={ControlLabel} sm={3}>Address</Col>
-              <Col sm={9}>
-                <FormControl
-                  componentClass={TextInput}
-                  name="address"
-                  value={address}
-                  onChange={this.onChange}
-                  key={id}
-                  readOnly={reserved}
-                />
-              </Col>
-            </FormGroup>
-            <FormGroup>
-              <Col componentClass={ControlLabel} sm={3}>Postal</Col>
-              <Col sm={9}>
-                <FormControl
-                  componentClass={TextInput}
-                  name="postal"
-                  value={postal}
-                  onChange={this.onChange}
-                  key={id}
-                  readOnly={reserved}
-                />
-              </Col>
-            </FormGroup>
-            <FormGroup>
-              <Col componentClass={ControlLabel} sm={3}>Total Storage</Col>
-              <Col sm={9}>
-                <FormControl
-                  componentClass={NumInput}
-                  name="totalStorage"
-                  value={totalStorage}
-                  onChange={this.onChange}
-                  key={id}
-                  readOnly={reserved}
-                />
-              </Col>
-            </FormGroup>
-            <FormGroup>
-              <Col componentClass={ControlLabel} sm={3}>Total Cold Storage</Col>
-              <Col sm={9}>
-                <FormControl
-                  componentClass={NumInput}
-                  name="totalColdStorage"
-                  value={totalColdStorage}
-                  onChange={this.onChange}
-                  key={id}
-                  readOnly={reserved}
-                />
-              </Col>
-            </FormGroup>
-            <h4>
-              Available Storage, Available Cold Storage, Reservation Contact are Auto-Generated
-            </h4>
-            <FormGroup>
-              <Col componentClass={ControlLabel} sm={3}>Available Storage</Col>
-              <Col sm={9}>
-                <FormControl
-                  componentClass={TextInput}
-                  name="availStorage"
-                  value={availStorage}
-                  onChange={this.onChange}
-                  key={id}
-                  readOnly
-                />
-              </Col>
-            </FormGroup>
-            <FormGroup>
-              <Col componentClass={ControlLabel} sm={3}>Available Cold Storage</Col>
-              <Col sm={9}>
-                <FormControl
-                  componentClass={TextInput}
-                  name="availColdStorage"
-                  value={availColdStorage}
-                  onChange={this.onChange}
-                  key={id}
-                  readOnly
-                />
-              </Col>
-            </FormGroup>
-            <FormGroup>
-              <Col componentClass={ControlLabel} sm={3}>Reservation Contact</Col>
-              <Col sm={9}>
-                <FormControl
-                  componentClass={TextInput}
-                  name="reservationContact"
-                  value={reservationContact}
-                  onChange={this.onChange}
-                  key={id}
-                  readOnly
-                />
-              </Col>
-            </FormGroup>
-            <FormGroup>
-              <Col smOffset={3} sm={6}>
-                <ButtonToolbar>
-                  {
-                    !reserved && (
-                      <Button
-                        disabled={!user.signedIn}
-                        bsStyle="primary"
-                        type="submit"
+      // <React.Fragment>
+      //   {
+      //     userId === user.email && (
+            <Panel>
+              <Panel.Heading>
+                <Panel.Title>{`Editing Offline Profile | Reserved: ${reserved}`}</Panel.Title>
+              </Panel.Heading>
+              <Panel.Body>
+                <Form horizontal onSubmit={this.handleSubmit}>
+                  <FormGroup>
+                    <Col componentClass={ControlLabel} sm={3}>Created</Col>
+                    <Col sm={9}>
+                      <FormControl.Static>
+                        {created.toDateString()}
+                      </FormControl.Static>
+                    </Col>
+                  </FormGroup>
+                  <FormGroup>
+                    <Col componentClass={ControlLabel} sm={3}>Name</Col>
+                    <Col sm={9}>
+                      <FormControl
+                        componentClass={TextInput}
+                        size={50}
+                        name="name"
+                        value={name}
+                        onChange={this.onChange}
+                        key={id}
+                        readOnly={reserved}
+                      />
+                    </Col>
+                  </FormGroup>
+                  <FormGroup>
+                    <Col componentClass={ControlLabel} sm={3}>Seeking</Col>
+                    <Col sm={9}>
+                      <FormControl
+                        componentClass="select"
+                        name="seeking"
+                        value={seeking || ''}
+                        onChange={this.onChange}
+                        readOnly={reserved}
                       >
-                        Submit
-                      </Button>
-                    )
-                  }
-                  <LinkContainer to="/offline-profile-list">
-                    <Button bsStyle="link">Back</Button>
-                  </LinkContainer>
-                </ButtonToolbar>
-              </Col>
-            </FormGroup>
-            <FormGroup>
-              <Col smOffset={3} sm={9}>{validationMessage}</Col>
-            </FormGroup>
-          </Form>
-        </Panel.Body>
-      </Panel>
+                        <option value="Storage">Storage</option>
+                        <option value="Other">Other</option>
+                      </FormControl>
+                    </Col>
+                  </FormGroup>
+                  <FormGroup>
+                    <Col componentClass={ControlLabel} sm={3}>Product</Col>
+                    <Col sm={9}>
+                      <FormControl
+                        componentClass={TextInput}
+                        name="product"
+                        value={product}
+                        onChange={this.onChange}
+                        key={id}
+                        readOnly={reserved}
+                      />
+                    </Col>
+                  </FormGroup>
+                  <FormGroup>
+                    <Col componentClass={ControlLabel} sm={3}>Website</Col>
+                    <Col sm={9}>
+                      <FormControl
+                        componentClass={TextInput}
+                        name="website"
+                        value={website}
+                        onChange={this.onChange}
+                        key={id}
+                        readOnly={reserved}
+                      />
+                    </Col>
+                  </FormGroup>
+                  <FormGroup>
+                    <Col componentClass={ControlLabel} sm={3}>Address</Col>
+                    <Col sm={9}>
+                      <FormControl
+                        componentClass={TextInput}
+                        name="address"
+                        value={address}
+                        onChange={this.onChange}
+                        key={id}
+                        readOnly={reserved}
+                      />
+                    </Col>
+                  </FormGroup>
+                  <FormGroup>
+                    <Col componentClass={ControlLabel} sm={3}>Postal</Col>
+                    <Col sm={9}>
+                      <FormControl
+                        componentClass={TextInput}
+                        name="postal"
+                        value={postal}
+                        onChange={this.onChange}
+                        key={id}
+                        readOnly={reserved}
+                      />
+                    </Col>
+                  </FormGroup>
+                  <FormGroup>
+                    <Col componentClass={ControlLabel} sm={3}>Total Storage (m3)</Col>
+                    <Col sm={9}>
+                      <FormControl
+                        componentClass={NumInput}
+                        name="totalStorage"
+                        value={totalStorage}
+                        onChange={this.onChange}
+                        key={id}
+                        readOnly={reserved}
+                      />
+                    </Col>
+                  </FormGroup>
+                  <FormGroup>
+                    <Col componentClass={ControlLabel} sm={3}>Total Cold Storage (m3)</Col>
+                    <Col sm={9}>
+                      <FormControl
+                        componentClass={NumInput}
+                        name="totalColdStorage"
+                        value={totalColdStorage}
+                        onChange={this.onChange}
+                        key={id}
+                        readOnly={reserved}
+                      />
+                    </Col>
+                  </FormGroup>
+                  <h4>
+                    Available Storage, Available Cold Storage, Reservation Contact are Auto-Generated
+                  </h4>
+                  <FormGroup>
+                    <Col componentClass={ControlLabel} sm={3}>Available Storage (m3)</Col>
+                    <Col sm={9}>
+                      <FormControl
+                        componentClass={TextInput}
+                        name="availStorage"
+                        value={availStorage}
+                        onChange={this.onChange}
+                        key={id}
+                        readOnly
+                      />
+                    </Col>
+                  </FormGroup>
+                  <FormGroup>
+                    <Col componentClass={ControlLabel} sm={3}>Available Cold Storage (m3)</Col>
+                    <Col sm={9}>
+                      <FormControl
+                        componentClass={TextInput}
+                        name="availColdStorage"
+                        value={availColdStorage}
+                        onChange={this.onChange}
+                        key={id}
+                        readOnly
+                      />
+                    </Col>
+                  </FormGroup>
+                  <FormGroup>
+                    <Col componentClass={ControlLabel} sm={3}>Reservation Contact</Col>
+                    <Col sm={9}>
+                      <FormControl
+                        componentClass={TextInput}
+                        name="reservationContact"
+                        value={reservationContact}
+                        onChange={this.onChange}
+                        key={id}
+                        readOnly
+                      />
+                    </Col>
+                  </FormGroup>
+                  <FormGroup>
+                    <Col smOffset={3} sm={6}>
+                      <ButtonToolbar>
+                        {
+                          !reserved && (
+                            <Button
+                              disabled={!user.signedIn}
+                              bsStyle="primary"
+                              type="submit"
+                            >
+                              Submit
+                            </Button>
+                          )
+                        }
+                        <LinkContainer to="/offline-profile-list">
+                          <Button bsStyle="link">Back</Button>
+                        </LinkContainer>
+                      </ButtonToolbar>
+                    </Col>
+                  </FormGroup>
+                  <FormGroup>
+                    <Col smOffset={3} sm={9}>{validationMessage}</Col>
+                  </FormGroup>
+                </Form>
+              </Panel.Body>
+            </Panel>
+      //     )
+      //   }
+
+      //   {
+      //     userId !== user.email && (
+      //       <React.Fragment>
+      //         <h1>You are not authorized to view this page!</h1>
+      //         <p>Try refreshing this page again.</p>
+      //       </React.Fragment>
+      //     )
+      //   }
+      // </React.Fragment>
     );
   }
 }

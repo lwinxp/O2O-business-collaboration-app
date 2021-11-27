@@ -93,16 +93,16 @@ class PrivateOnlineProfile extends React.Component {
     }`;
     // userId: String
 
-    console.log('query:', query);
+    // console.log('query:', query);
 
     const { id, created, userId, ...changes } = onlineProfile;
-    console.log('changes:', changes);
+    // console.log('changes:', changes);
 
     const { showSuccess, showError } = this.props;
-    console.log('======reached here========');
+    // console.log('======reached here========');
 
     const data = await graphQLFetch(query, { changes, id }, showError);
-    console.log('data:', data);
+    // console.log('PrivateOnlineProfile data:', data);
 
     if (data) {
       this.setState({ onlineProfile: data.onlineProfileUpdate });
@@ -148,123 +148,140 @@ class PrivateOnlineProfile extends React.Component {
     }
 
     const { onlineProfile: { name, seeking } } = this.state;
-    const { onlineProfile: { product, website, address, postal } } = this.state;
+    const { onlineProfile: { product, website, address, postal, userId } } = this.state;
     const { onlineProfile: { created } } = this.state;
 
     const user = this.context;
+    // console.log('PrivateOnlineProfile user:', user);
+    // console.log('PrivateOnlineProfile userId:', userId);
 
     return (
-      <Panel>
-        <Panel.Heading>
-          <Panel.Title>{`Editing online profile: ${id}`}</Panel.Title>
-        </Panel.Heading>
-        <Panel.Body>
-          <Form horizontal onSubmit={this.handleSubmit}>
-            <FormGroup>
-              <Col componentClass={ControlLabel} sm={3}>Created</Col>
-              <Col sm={9}>
-                <FormControl.Static>
-                  {created.toDateString()}
-                </FormControl.Static>
-              </Col>
-            </FormGroup>
-            <FormGroup>
-              <Col componentClass={ControlLabel} sm={3}>Seeking</Col>
-              <Col sm={9}>
-                <FormControl
-                  componentClass="select"
-                  name="seeking"
-                  value={seeking || ''}
-                  onChange={this.onChange}
-                >
-                  <option value="Storage">Storage</option>
-                  <option value="Other">Other</option>
-                </FormControl>
-              </Col>
-            </FormGroup>
-            <FormGroup>
-              <Col componentClass={ControlLabel} sm={3}>Product</Col>
-              <Col sm={9}>
-                <FormControl
-                  componentClass={TextInput}
-                  name="product"
-                  value={product}
-                  onChange={this.onChange}
-                  key={id}
-                />
-              </Col>
-            </FormGroup>
-            <FormGroup>
-              <Col componentClass={ControlLabel} sm={3}>Website</Col>
-              <Col sm={9}>
-                <FormControl
-                  componentClass={TextInput}
-                  name="website"
-                  value={website}
-                  onChange={this.onChange}
-                  key={id}
-                />
-              </Col>
-            </FormGroup>
-            <FormGroup>
-              <Col componentClass={ControlLabel} sm={3}>Address</Col>
-              <Col sm={9}>
-                <FormControl
-                  componentClass={TextInput}
-                  name="address"
-                  value={address}
-                  onChange={this.onChange}
-                  key={id}
-                />
-              </Col>
-            </FormGroup>
-            <FormGroup>
-              <Col componentClass={ControlLabel} sm={3}>Postal</Col>
-              <Col sm={9}>
-                <FormControl
-                  componentClass={TextInput}
-                  name="postal"
-                  value={postal}
-                  onChange={this.onChange}
-                  key={id}
-                />
-              </Col>
-            </FormGroup>
-            <FormGroup>
-              <Col componentClass={ControlLabel} sm={3}>Name</Col>
-              <Col sm={9}>
-                <FormControl
-                  componentClass={TextInput}
-                  size={50}
-                  name="name"
-                  value={name}
-                  onChange={this.onChange}
-                  key={id}
-                />
-              </Col>
-            </FormGroup>
-            <FormGroup>
-              <Col smOffset={3} sm={6}>
-                <ButtonToolbar>
-                  <Button
-                    disabled={!user.signedIn}
-                    bsStyle="primary"
-                    type="submit"
-                  >
-                    Submit
-                  </Button>
-                  <LinkContainer to="/online-profile-list">
-                    <Button bsStyle="link">Back</Button>
-                  </LinkContainer>
-                </ButtonToolbar>
-              </Col>
-            </FormGroup>
-            <FormGroup>
-              <Col smOffset={3} sm={9}>{validationMessage}</Col>
-            </FormGroup>
-          </Form>
-        </Panel.Body>
-      </Panel>
+      // <React.Fragment>
+      //   {
+      //     userId === user.email && (
+            <Panel>
+              <Panel.Heading>
+                <Panel.Title>Editing Online Profile</Panel.Title>
+              </Panel.Heading>
+              <Panel.Body>
+                <Form horizontal onSubmit={this.handleSubmit}>
+                  <FormGroup>
+                    <Col componentClass={ControlLabel} sm={3}>Created</Col>
+                    <Col sm={9}>
+                      <FormControl.Static>
+                        {created.toDateString()}
+                      </FormControl.Static>
+                    </Col>
+                  </FormGroup>
+                  <FormGroup>
+                    <Col componentClass={ControlLabel} sm={3}>Name</Col>
+                    <Col sm={9}>
+                      <FormControl
+                        componentClass={TextInput}
+                        size={50}
+                        name="name"
+                        value={name}
+                        onChange={this.onChange}
+                        key={id}
+                      />
+                    </Col>
+                  </FormGroup>
+                  <FormGroup>
+                    <Col componentClass={ControlLabel} sm={3}>Seeking</Col>
+                    <Col sm={9}>
+                      <FormControl
+                        componentClass="select"
+                        name="seeking"
+                        value={seeking || ''}
+                        onChange={this.onChange}
+                      >
+                        <option value="Storage">Storage</option>
+                        <option value="Other">Other</option>
+                      </FormControl>
+                    </Col>
+                  </FormGroup>
+                  <FormGroup>
+                    <Col componentClass={ControlLabel} sm={3}>Product</Col>
+                    <Col sm={9}>
+                      <FormControl
+                        componentClass={TextInput}
+                        name="product"
+                        value={product}
+                        onChange={this.onChange}
+                        key={id}
+                      />
+                    </Col>
+                  </FormGroup>
+                  <FormGroup>
+                    <Col componentClass={ControlLabel} sm={3}>Website</Col>
+                    <Col sm={9}>
+                      <FormControl
+                        componentClass={TextInput}
+                        name="website"
+                        value={website}
+                        onChange={this.onChange}
+                        key={id}
+                      />
+                    </Col>
+                  </FormGroup>
+                  <FormGroup>
+                    <Col componentClass={ControlLabel} sm={3}>Address</Col>
+                    <Col sm={9}>
+                      <FormControl
+                        componentClass={TextInput}
+                        name="address"
+                        value={address}
+                        onChange={this.onChange}
+                        key={id}
+                      />
+                    </Col>
+                  </FormGroup>
+                  <FormGroup>
+                    <Col componentClass={ControlLabel} sm={3}>Postal</Col>
+                    <Col sm={9}>
+                      <FormControl
+                        componentClass={TextInput}
+                        name="postal"
+                        value={postal}
+                        onChange={this.onChange}
+                        key={id}
+                      />
+                    </Col>
+                  </FormGroup>
+                  <FormGroup>
+                    <Col smOffset={3} sm={6}>
+                      <ButtonToolbar>
+                        <Button
+                          disabled={!user.signedIn}
+                          bsStyle="primary"
+                          type="submit"
+                        >
+                          Submit
+                        </Button>
+                        <LinkContainer to="/online-profile-list">
+                          <Button bsStyle="link">Back</Button>
+                        </LinkContainer>
+                      </ButtonToolbar>
+                    </Col>
+                  </FormGroup>
+                  <FormGroup>
+                    <Col smOffset={3} sm={9}>{validationMessage}</Col>
+                  </FormGroup>
+                </Form>
+              </Panel.Body>
+            </Panel>
+      //     )
+      //   }
+
+      //   {
+      //     userId !== user.email && (
+      //       <React.Fragment>
+      //         <h1>You are not authorized to view this page!</h1>
+      //         <p>Try refreshing this page again.</p>
+      //       </React.Fragment>
+      //     )
+      //   }
+      // </React.Fragment>
     );
   }
 }

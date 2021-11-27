@@ -29,8 +29,8 @@ function getUser(req) {
   try {
     const credentials = jwt.verify(token, JWT_SECRET);
 
-    console.log('credentials', credentials);
-    
+    // console.log('credentials', credentials);
+
     return credentials;
   } catch (error) {
     return { signedIn: false };

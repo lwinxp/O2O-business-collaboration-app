@@ -93,16 +93,16 @@ class PublicOnlineProfile extends React.Component {
     }`;
     // userId: String
 
-    console.log('query:', query);
+    // console.log('query:', query);
 
     const { id, created, userId, ...changes } = onlineProfile;
-    console.log('changes:', changes);
+    // console.log('changes:', changes);
 
     const { showSuccess, showError } = this.props;
-    console.log('======reached here========');
+    // console.log('======reached here========');
 
     const data = await graphQLFetch(query, { changes, id }, showError);
-    console.log('data:', data);
+    // console.log('PublicOnlineProfile data:', data);
 
     if (data) {
       this.setState({ onlineProfile: data.onlineProfileUpdate });
@@ -156,7 +156,7 @@ class PublicOnlineProfile extends React.Component {
     return (
       <Panel>
         <Panel.Heading>
-          <Panel.Title>{`Viewing online profile: ${id}`}</Panel.Title>
+          <Panel.Title>Viewing Online Profile</Panel.Title>
         </Panel.Heading>
         <Panel.Body>
           <Form horizontal onSubmit={this.handleSubmit}>
@@ -166,6 +166,20 @@ class PublicOnlineProfile extends React.Component {
                 <FormControl.Static>
                   {created.toDateString()}
                 </FormControl.Static>
+              </Col>
+            </FormGroup>
+            <FormGroup>
+              <Col componentClass={ControlLabel} sm={3}>Name</Col>
+              <Col sm={9}>
+                <FormControl
+                  componentClass={TextInput}
+                  size={50}
+                  name="name"
+                  value={name}
+                  onChange={this.onChange}
+                  key={id}
+                  readOnly
+                />
               </Col>
             </FormGroup>
             <FormGroup>
@@ -229,20 +243,6 @@ class PublicOnlineProfile extends React.Component {
                   componentClass={TextInput}
                   name="postal"
                   value={postal}
-                  onChange={this.onChange}
-                  key={id}
-                  readOnly
-                />
-              </Col>
-            </FormGroup>
-            <FormGroup>
-              <Col componentClass={ControlLabel} sm={3}>Name</Col>
-              <Col sm={9}>
-                <FormControl
-                  componentClass={TextInput}
-                  size={50}
-                  name="name"
-                  value={name}
                   onChange={this.onChange}
                   key={id}
                   readOnly

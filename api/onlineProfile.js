@@ -17,20 +17,23 @@ async function list() {
 const PAGE_SIZE = 10;
 
 async function list(_, {
-  status, storageMin, storageMax, search, page,
+  status, storageMin, storageMax, search, page, userId,
 }) {
   const db = getDb();
   const filter = {};
+  if (userId) filter.userId = userId;
 
   if (status) filter.status = status;
 
   if (storageMin !== undefined || storageMax !== undefined) {
-    filter.effort = {};
-    if (storageMin !== undefined) filter.effort.$gte = storageMin;
-    if (storageMax !== undefined) filter.effort.$lte = storageMax;
+    filter.storage = {};
+    if (storageMin !== undefined) filter.storage.$gte = storageMin;
+    if (storageMax !== undefined) filter.storage.$lte = storageMax;
   }
 
   if (search) filter.$text = { $search: search };
+
+  // console.log('onlineProfiles filter:', filter);
 
   const cursor = db.collection('onlineProfiles').find(filter)
     .sort({ id: 1 })
@@ -43,14 +46,21 @@ async function list(_, {
   return { onlineProfiles, pages };
 }
 
-function validate(onlineProfile) {
+function validateAdd(onlineProfile) {
   const errors = [];
-  // if (issue.title.length < 3) {
-  //   errors.push('Field "title" must be at least 3 characters long.');
-  // }
-  // if (issue.status === 'Assigned' && !issue.owner) {
-  //   errors.push('Field "owner" is required when status is "Assigned"');
-  // }
+  if (!onlineProfile.name || !onlineProfile.seeking) {
+    errors.push('All fields are mandatory. Please fill in all fields');
+  }
+  if (errors.length > 0) {
+    throw new UserInputError('Invalid input(s)', { errors });
+  }
+}
+
+function validateUpdate(onlineProfile) {
+  const errors = [];
+  if (!onlineProfile.name || !onlineProfile.seeking || !onlineProfile.address || !onlineProfile.postal || !onlineProfile.product || !onlineProfile.website) {
+    errors.push('All fields are mandatory. Please fill in all fields');
+  }
   if (errors.length > 0) {
     throw new UserInputError('Invalid input(s)', { errors });
   }
@@ -58,7 +68,7 @@ function validate(onlineProfile) {
 
 async function add(_, { onlineProfile }) {
   const db = getDb();
-  validate(onlineProfile);
+  validateAdd(onlineProfile);
 
   const newOnlineProfile = Object.assign({}, onlineProfile);
   newOnlineProfile.created = new Date();
@@ -67,23 +77,23 @@ async function add(_, { onlineProfile }) {
   const result = await db.collection('onlineProfiles').insertOne(newOnlineProfile);
   const savedOnlineProfile = await db.collection('onlineProfiles')
     .findOne({ _id: result.insertedId });
-  console.log('add - savedOnlineProfile:', savedOnlineProfile);
+  // console.log('add - savedOnlineProfile:', savedOnlineProfile);
   return savedOnlineProfile;
 }
 
 async function update(_, { id, changes }) {
   const db = getDb();
-  console.log('update - changes:', changes);
+  // console.log('update - changes:', changes);
   if (changes.name || changes.seeking || changes.product || changes.website || changes.address || changes.postal) {
     const onlineProfile = await db.collection('onlineProfiles').findOne({ id });
-    console.log('update - onlineProfile db object:', onlineProfile);
+    // console.log('update - onlineProfile db object:', onlineProfile);
 
     Object.assign(onlineProfile, changes);
-    validate(onlineProfile);
+    validateUpdate(onlineProfile);
   }
   await db.collection('onlineProfiles').updateOne({ id }, { $set: changes });
   const savedOnlineProfile = await db.collection('onlineProfiles').findOne({ id });
-  console.log('update - savedOnlineProfile:', savedOnlineProfile);
+  // console.log('update - savedOnlineProfile:', savedOnlineProfile);
   return savedOnlineProfile;
 }
 

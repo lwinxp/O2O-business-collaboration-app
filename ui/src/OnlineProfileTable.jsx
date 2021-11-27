@@ -25,7 +25,7 @@ class OnlineProfileRowPlain extends React.Component {
 
     const tableRow = (
       <tr>
-        <td>{onlineProfile.id}</td>
+        {/* <td>{onlineProfile.id}</td> */}
         <td>{onlineProfile.name}</td>
         <td>{onlineProfile.seeking}</td>
         <td>{onlineProfile.address}</td>
@@ -61,7 +61,7 @@ export default function OnlineProfileTable({ onlineProfiles, browse }) {
     <Table bordered condensed hover responsive>
       <thead>
         <tr>
-          <th>ID</th>
+          {/* <th>ID</th> */}
           <th>Name</th>
           <th>Seeking</th>
           <th>Address</th>
