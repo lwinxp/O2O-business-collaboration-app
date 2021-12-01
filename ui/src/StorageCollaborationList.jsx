@@ -59,7 +59,7 @@ class StorageCollaborationList extends React.Component {
     if (Number.isNaN(page)) page = 1;
     vars.page = page;
 
-    console.log('fetchData user:', user);
+    // console.log('fetchData user:', user);
     if (user) {
       vars.offlineProfileUserId = user.email;
       vars.onlineProfileUserId = user.email;

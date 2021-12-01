@@ -10,7 +10,7 @@ let { JWT_SECRET } = process.env;
 if (!JWT_SECRET) {
   if (process.env.NODE_ENV !== 'production') {
     JWT_SECRET = 'tempjwtsecretfordevonly';
-    console.log('Missing env var JWT_SECRET. Using unsafe dev secret');
+    // console.log('Missing env var JWT_SECRET. Using unsafe dev secret');
   } else {
     console.log('Missing env var JWT_SECRET. Authentication disabled');
   }

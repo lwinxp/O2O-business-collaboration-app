@@ -116,8 +116,8 @@ db.storageCollaborations.remove({});
 const storageCollaborationsDB = [
   {
     id: 1,
-    onlineProfileUserId: 'limxuanping@gmail.com', // replace with your own email 1
-    offlineProfileUserId: 'limxuanping.govtech@gmail.com', // replace with your own email 2
+    onlineProfileUserId: 'limxuanping.govtech@gmail.com', // replace with your own email 2
+    offlineProfileUserId: 'limxuanping@gmail.com', // replace with your own email 1
     offlineProfileId: 123,
     name: 'Big Fish - Uncle Joe Storage Collaboration',
     seeking: 'Storage',

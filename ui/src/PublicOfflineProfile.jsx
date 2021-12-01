@@ -16,6 +16,14 @@ import StorageCollaborationAddItem from './StorageCollaborationAddItem.jsx';
 
 
 class PublicOfflineProfile extends React.Component {
+  static async fetchUserData(cookie) {
+    const query = `query { user {
+      signedIn givenName email
+    }}`;
+    const data = await graphQLFetch(query, null, null, cookie);
+    return data;
+  }
+
   static async fetchData(match, search, showError) {
     const query = `query offlineProfile($id: Int!) {
       offlineProfile(id: $id) {
@@ -48,7 +56,12 @@ class PublicOfflineProfile extends React.Component {
     this.showValidation = this.showValidation.bind(this);
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    const { user } = this.state;
+    if (user == null) {
+      const data = await PublicOfflineProfile.fetchUserData();
+      this.setState({ user: data.user });
+    }
     const { offlineProfile } = this.state;
     if (offlineProfile == null) this.loadData();
   }
@@ -161,6 +174,11 @@ class PublicOfflineProfile extends React.Component {
     const { offlineProfile: { created } } = this.state;
 
     const user = this.context;
+
+    // console.log('========userId===========:', userId);
+    // console.log('========this.state===========:', this.state);
+    // console.log('========this.state.user.email===========:', this.state.user.email);
+
 
     return (
       <Panel>
@@ -331,7 +349,7 @@ class PublicOfflineProfile extends React.Component {
                 <ButtonToolbar>
 
                   {
-                    !reserved && (userId !== user.email) && (
+                    !reserved && (userId !== this.state.user.email) && (
                       <StorageCollaborationAddItem offlineProfileId={_id} offlineProfileUserId={userId} user={user} />
                     )
                   }

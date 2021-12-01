@@ -15,6 +15,14 @@ import store from './store.js';
 import UserContext from './UserContext.js';
 
 class StorageCollaboration extends React.Component {
+  static async fetchUserData(cookie) {
+    const query = `query { user {
+      signedIn givenName email
+    }}`;
+    const data = await graphQLFetch(query, null, null, cookie);
+    return data;
+  }
+
   static async fetchData(match, search, showError) {
     const query = `query storageCollaboration($id: Int!) {
       storageCollaboration(id: $id) {
@@ -48,7 +56,12 @@ class StorageCollaboration extends React.Component {
     // this.handleSubmit = this.handleSubmit.bind(this);  
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    const { user } = this.state;
+    if (user == null) {
+      const data = await StorageCollaboration.fetchUserData();
+      this.setState({ user: data.user });
+    }
     const { storageCollaboration } = this.state;
     if (storageCollaboration == null) this.loadData();
   }
@@ -158,9 +171,12 @@ class StorageCollaboration extends React.Component {
     const { storageCollaboration: { created, status, onlineProfileUserId, offlineProfileUserId } } = this.state;
 
     const user = this.context;
+    // console.log('========this.state===========:', this.state);
+    // console.log('========this.state.user.email===========:', this.state.user.email);
+    // console.log('onlineProfileUserId user:', onlineProfileUserId);
+
     const readOnly = status === 'Draft' ? false : true;
     // console.log('storageCollaboration user:', user);
-    // console.log('onlineProfileUserId user:', onlineProfileUserId);
     // console.log('offlineProfileUserId user:', offlineProfileUserId);
 
 
@@ -344,7 +360,7 @@ class StorageCollaboration extends React.Component {
                       }
 
                       {
-                        status === 'Pending' && onlineProfileUserId !== user.email && (
+                        status === 'Pending' && onlineProfileUserId !== this.state.user.email && (
                           <ButtonToolbar>
                             <Button
                               disabled={!user.signedIn}
@@ -372,7 +388,7 @@ class StorageCollaboration extends React.Component {
                       }
 
                       {
-                        status === 'Pending' && onlineProfileUserId === user.email && (
+                        status === 'Pending' && onlineProfileUserId === this.state.user.email && (
                           <ButtonToolbar>
                             <LinkContainer to="/storage-collaboration-list">
                               <Button bsStyle="link">Back</Button>
