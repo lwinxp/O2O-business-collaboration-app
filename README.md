@@ -47,19 +47,19 @@ npm run dev-all
 15. To test “happy path” transaction of the application, do not use seeded data, instead
 
 **With Google account 1**
-a. Create 1 offline profile in “Your Offline Profiles” with all fields filled
-b. The new offline profile should be viewable in “Browse Offline Profiles”
+- a. Create 1 offline profile in “Your Offline Profiles” with all fields filled
+- b. The new offline profile should be viewable in “Browse Offline Profiles”
 
 **Switch to Google account 2**
-a. The new offline profile should be viewable in “Browse Offline Profiles”
-b. The new offline profile should show a Create Storage Collaboration button
-c. Create 1 Storage Collaboration with all fields filled and submit
+- a. The new offline profile should be viewable in “Browse Offline Profiles”
+- b. The new offline profile should show a Create Storage Collaboration button
+- c. Create 1 Storage Collaboration with all fields filled and submit
 
 **Switch to Google account 1**
-a. The new Storage Collaboration should be viewable in “Your Storage Collaborations”
-b. The new Storage Collaboration should show Accept and Reject buttons
-c. Accept the Storage Collaboration
-d. The new offline profile will reflect new available storage and cold storage volumes after accounting for the new Storage Collaboration
+- a. The new Storage Collaboration should be viewable in “Your Storage Collaborations”
+- b. The new Storage Collaboration should show Accept and Reject buttons
+- c. Accept the Storage Collaboration
+- d. The new offline profile will reflect new available storage and cold storage volumes after accounting for the new Storage Collaboration
 (For seeking field, always select Storage option)
 
 Note:
